@@ -1,0 +1,60 @@
+##引入宏定义
+$!init
+$!define
+
+##使用宏定义设置回调（保存位置与文件后缀）
+#save("/entity", ".java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("entity")
+
+##使用全局变量实现默认包导入
+$!autoImport
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+#foreach($column in $tableInfo.fullColumn)
+    #if($column.type.equals("java.util.Date"))
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+#break
+    #end
+#end
+
+##使用宏定义实现类注释信息
+#tableComment("实体类")
+@TableName("$!tableInfo.obj.name")
+@ApiModel(value = "$!{tableInfo.name}", description = "$!{tableInfo.comment}")
+public class $!{tableInfo.name} extends Model {
+#foreach($column in $tableInfo.fullColumn)
+#if(${column.name} == "id")
+    @ApiModelProperty(value = "$!{column.comment}")
+    @TableId
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+#if(${column.name} != "id" && (${column.name} != "gmtCreate" && ${column.name} != "gmtModified"))
+    @ApiModelProperty(value = "$!{column.comment}")
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+#if(${column.name} == "gmtCreate")
+    @ApiModelProperty(value = "$!{column.comment}")
+    @TableField(fill = FieldFill.INSERT)
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+#if(${column.name} == "gmtModified")
+    @ApiModelProperty(value = "$!{column.comment}")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+#end
+
+#foreach($column in $tableInfo.fullColumn)
+##使用宏定义实现get,set方法
+#getSetMethod($column)
+#end
+
+}

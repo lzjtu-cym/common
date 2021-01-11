@@ -1,0 +1,29 @@
+##导入宏定义
+$!init
+$!define
+
+##设置表后缀（宏定义）
+#setTableSuffix("ServiceImpl")
+
+##保存文件（宏定义）
+#save("/service/impl", "ServiceImpl.java")
+
+##包路径（宏定义）
+#setPackageSuffix("service.impl")
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import $!{tableInfo.savePackageName}.mapper.$!{tableInfo.name}Mapper;
+import $!{tableInfo.savePackageName}.entity.$!tableInfo.name;
+import $!{tableInfo.savePackageName}.service.I$!{tableInfo.name}Service;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+
+##表注释（宏定义）
+#tableComment("表服务实现类")
+@Service
+@Transactional(rollbackFor = Exception.class) 
+public class $!{tableName} extends ServiceImpl<$!{tableInfo.name}Mapper, $!{tableInfo.name}> implements I$!{tableInfo.name}Service {
+    private static final Logger logger = LoggerFactory.getLogger($!{tableName}.class);
+}
