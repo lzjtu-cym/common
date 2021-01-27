@@ -1,9 +1,18 @@
 #### 介绍
-springboot创建的工具类，包括：easyCode模板配置说明，返回数据包装类，自动填充新增修改时间类。
+springboot创建的工具类：
+一、easyCode插件模板配置说明，返回数据包装类，自动填充新增修改时间类。
 
 1.  easyCode模板：在 resources\template 下
 2.  数据包装类：在 common\utils 下
 3.  填充新增修改时间类： 在 common\config 下
+
+二、Redis工具类
+
+1.  opsForValue: String
+2.  opsForSet: Set
+3.  opsForHash: hash
+4.  opsForZset: SortSet
+5.  opsForList: list队列
 
 #### 软件架构
 软件架构说明
