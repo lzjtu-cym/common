@@ -7,7 +7,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-    # type: com.alibaba.druid.pool.DruidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 初始大小，最大，最小
       initial-size: 3
@@ -22,6 +22,13 @@ spring:
   # 应用名称
   application:
     name: config-client
+
+  # Redis配置
+  redis:
+    database : 0  # 连接的那个数据库
+    host: 192.168.199.142 # redis服务的ip地址
+    port: 6379 # redis端口号
+    password:   # redis的密码，没设置过密码，可为空
 
 # mybatis-plus配置
 mybatis-plus:

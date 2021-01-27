@@ -41,6 +41,11 @@
             <scope>runtime</scope>
             <version>8.0.22</version>
         </dependency>
+        <!--SpringBoot与Redis整合依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <!--    hutool    -->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -52,6 +57,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.1</version>
+        </dependency>
+        <!--druid-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.4</version>
         </dependency>
         <!-- Swagger 接口文档 -->
         <dependency>
