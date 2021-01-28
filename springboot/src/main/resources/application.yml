@@ -30,6 +30,23 @@ spring:
     port: 6379 # redis端口号
     password:   # redis的密码，没设置过密码，可为空
 
+  # 邮箱配置
+  mail:
+    host: smtp.163.com #SMTP服务器地址
+    #登陆账号
+    username: 15294183759
+    #登陆密码（或授权码）
+    password: OXYZAEYYEXJMMYAH
+    properties:
+      from: 15294183759@163.com #邮件发信人（即真实邮箱）
+  thymeleaf:
+    cache: false
+    prefix: classpath:/views/
+  servlet:
+    multipart:
+      max-file-size: 10MB #限制单个文件大小
+      max-request-size: 50MB #限制请求总量
+
 # mybatis-plus配置
 mybatis-plus:
   # MyBatis Mapper.xml
