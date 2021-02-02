@@ -35,4 +35,18 @@ public class SmsController {
             return ResponseUtil.faliedResponse("发送短信失败！", e.getMessage());
         }
     }
+
+    @PostMapping("/validSmsCode")
+    public Object validSmsCode(String phone, String code) {
+        try {
+            if (smsService.validSmsCode(phone, code)) {
+                return ResponseUtil.successResponse("验证成功");
+            } else {
+                return ResponseUtil.successResponse("验证失败");
+            }
+        } catch (Exception e) {
+            logger.error("发送短信失败", e);
+            return ResponseUtil.faliedResponse("发送短信失败！", e.getMessage());
+        }
+    }
 }

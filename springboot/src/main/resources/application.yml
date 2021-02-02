@@ -51,6 +51,8 @@ spring:
   sms:
     accessKeyId:
     accessKeySecret:
+    domain: dysmsapi.aliyuncs.com
+    regionId: cn-hangzhou #固定不变
     templateCode:  #短信模板,即在阿里云短信服务中自己创建的短信模板ID
     signName: 陈陈学习  #短信签名,即最前面在【】这个中的文字
 

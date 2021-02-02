@@ -6,6 +6,8 @@ import com.aliyuncs.CommonRequest;
 import com.aliyuncs.CommonResponse;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
@@ -38,7 +40,13 @@ public class SmsServiceImpl implements ISmsService {
     private String accessKeyId;
     @Value(value = "${spring.sms.accessKeySecret}")
     private String accessKeySecret;
-
+    /**
+     * 短信api的请求地址  固定
+     */
+    @Value("${spring.sms.domain}")
+    private String domain;
+    @Value("${spring.sms.regionId}")
+    private String regionId;
     /**
      * 短信签名,即最前面在【】这个中的文字,可以打开手机随便看一条商业短信,例：【淘宝】亲爱的用户.....
      */
@@ -58,40 +66,46 @@ public class SmsServiceImpl implements ISmsService {
         logger.info("********************发送短信开始*****************");
         // 验证手机号码
         checkPhone(phones);
-        // 初始化acsClient,需要填写自己的accessKeyId和accessSecret
-        // regionId只有一个杭州,不支持其他地区
-        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+        // 指定地域名称 短信API的就是 cn-hangzhou 不能改变  后边填写您的  accessKey 和 accessKey Secret
+        DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
         IAcsClient client = new DefaultAcsClient(profile);
-
-        // 组装请求对象,这几项为默认的设置,不必修改
+        // 创建通用的请求对象
         CommonRequest request = new CommonRequest();
+        // 指定请求方式
         request.setSysMethod(MethodType.POST);
-        // 阿里云服务器域名
-        request.setSysDomain("dysmsapi.aliyuncs.com");
+        // 短信api的请求地址  固定
+        request.setSysDomain(domain);
+        //签名算法版本  固定
         request.setSysVersion("2017-05-25");
+        //请求 API 的名称
         request.setSysAction("SendSms");
-        request.putQueryParameter("RegionId", "cn-hangzhou");
-
-        // 短信接收者手机号
+        //指定地域名称
+        request.putQueryParameter("RegionId", regionId);
+        // 要给哪个手机号发送短信  指定手机号
         request.putQueryParameter("PhoneNumbers", phones);
-        // 短信签名
+        // 您的申请签名
         request.putQueryParameter("SignName", signName);
-        // 模板ID
+        // 您申请的模板 code
         request.putQueryParameter("TemplateCode", templateCode);
 
-        // 构建短信模板参数替换,要求格式为json
-        // 如果你的短信模板为：验证码为：${code},那么你的json为：{"code": "2345"}
-        Map<String, String> jsonParam = new HashMap<>();
-        jsonParam.put("code", makeCode());
+        Map<String, Object> params = new HashMap<>();
+        //这里的key就是短信模板中的 ${xxxx}
+        String code = makeCode();
+        params.put("code", code);
 
-        //此处我用的json格式化的依赖是fastjson,SpringBoot自带的是jackson
-        request.putQueryParameter("TemplateParam", JSON.toJSONString(jsonParam));
-        // 发送请求并获取响应,判断是否成功
-        CommonResponse response = client.getCommonResponse(request);
-        if (response.getHttpStatus() == 200) {
-            // 将验证码缓存到redis中，2分钟过后自动清除该缓存
-            redisUtils.setString(phones, 2L);
-            logger.info("********************发送短信结束*****************");
+        // 放入参数  需要把 map转换为json格式  使用fastJson进行转换
+        request.putQueryParameter("TemplateParam", JSON.toJSONString(params));
+
+        try {
+            CommonResponse response = client.getCommonResponse(request);
+            if (response.getHttpStatus() == 200) {
+                redisUtils.setString(phones, code + ":" + 2L);
+            }
+            logger.info(JSON.parseObject(response.getData(), Map.class).get("Message").toString());
+        } catch (ServerException e) {
+            e.printStackTrace();
+        } catch (ClientException e) {
+            e.printStackTrace();
         }
     }
 
@@ -129,9 +143,10 @@ public class SmsServiceImpl implements ISmsService {
             return false;
         } else {
             //判断上一次记录的时间和当前时间进行对比，如果两次相隔时间小于120s，视为短信发送频繁
-            Long time = (Long) redisUtils.getString(phone);
+            String codeTime = (String) redisUtils.getString(phone);
+            String[] strings = codeTime.split(":");
             //两次发送短信中间至少有2分钟的间隔时间
-            if (time + 120 * 1000 >= System.currentTimeMillis()) {
+            if (Long.valueOf(strings[1]) + 120 * 1000 >= System.currentTimeMillis()) {
                 return true;
             }
             return false;
@@ -145,14 +160,16 @@ public class SmsServiceImpl implements ISmsService {
      * @param code
      * @return
      */
+    @Override
     public boolean validSmsCode(String phone, String code) {
         //取出所有有关该手机号的短信验证码
         if (ObjectUtils.isEmpty(redisUtils.getString(phone))) {
             logger.info("*************短信验证失败*************");
             return false;
         }
-        String oldCode = (String) redisUtils.getString(phone);
-        if (oldCode.equals(code)) {
+        String codeTime = (String) redisUtils.getString(phone);
+        String[] strings = codeTime.split(":");
+        if (Long.valueOf(strings[0]).equals(code)) {
             logger.info("*************短信验证成功*************");
             //删除掉该redis
             redisUtils.remove(phone);

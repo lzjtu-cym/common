@@ -15,4 +15,13 @@ public interface ISmsService {
      * @throws Exception
      */
     void sendSms(String phones) throws Exception;
+
+    /**
+     * 短信验证
+     *
+     * @param phone 手机号
+     * @param code  验证码
+     * @return
+     */
+    boolean validSmsCode(String phone, String code);
 }
