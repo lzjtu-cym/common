@@ -106,6 +106,19 @@
             <version>3.3.7</version>
         </dependency>
         <!--    end 发送邮件导入包    -->
+
+        <!-- 阿里依赖sdk -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+        <!-- 由于SpringBoot自带的jackson的API不如fastjson好用,所以又引入了依赖 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.75</version>
+        </dependency>
     </dependencies>
 
     <build>

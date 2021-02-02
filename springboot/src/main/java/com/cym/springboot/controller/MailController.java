@@ -4,13 +4,11 @@ import com.cym.springboot.common.utils.ResponseUtil;
 import com.cym.springboot.entity.MailVo;
 import com.cym.springboot.service.IMailService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @Description: 邮件发送控制类
@@ -26,14 +24,6 @@ public class MailController {
 
     @Autowired
     private IMailService mailService;
-
-    @ApiOperation(value = "用户表 - 通过id查询", notes = "用户查询")
-    @GetMapping("sendForm")
-    public ModelAndView sendForm() {
-        ModelAndView mv = new ModelAndView("sendMail");
-        mv.addObject("from", mailService.getMailSendFrom());
-        return mv;
-    }
 
     @PostMapping("/sendMail")
     public Object sendMail(MailVo mailVo, MultipartFile[] files) {
