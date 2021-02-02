@@ -49,9 +49,9 @@ spring:
 
   # 阿里短信配置
   sms:
-    accessKeyId: LTAI4FzNm49bU7zfgZQhr3kJ
-    accessKeySecret: QvaxxIOUpMnfJ8ees6T6xZLF1F3vZ5
-    templateCode: SMS_211001436 #短信模板,即在阿里云短信服务中自己创建的短信模板ID
+    accessKeyId:
+    accessKeySecret:
+    templateCode:  #短信模板,即在阿里云短信服务中自己创建的短信模板ID
     signName: 陈陈学习  #短信签名,即最前面在【】这个中的文字
 
 # mybatis-plus配置
