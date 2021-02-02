@@ -4,6 +4,7 @@ import com.cym.springboot.common.utils.ResponseUtil;
 import com.cym.springboot.entity.MailVo;
 import com.cym.springboot.service.IMailService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class MailController {
     private IMailService mailService;
 
     @PostMapping("/sendMail")
+    @ApiOperation(value = "邮件发送", notes = "邮件发送入口")
     public Object sendMail(MailVo mailVo, MultipartFile[] files) {
         try {
             mailVo.setMultipartFiles(files);

@@ -99,7 +99,7 @@ public class SmsServiceImpl implements ISmsService {
         try {
             CommonResponse response = client.getCommonResponse(request);
             if (response.getHttpStatus() == 200) {
-                redisUtils.setString(phones, code + ":" + 2L);
+                //redisUtils.setString(phones, code + ":" + 2L);
             }
             logger.info(JSON.parseObject(response.getData(), Map.class).get("Message").toString());
         } catch (ServerException e) {
@@ -126,10 +126,10 @@ public class SmsServiceImpl implements ISmsService {
             }
         }
         //判断用户输入的电话号码是否频繁发送
-        if (isSendOfen(phones)) {
+        /*if (isSendOfen(phones)) {
             logger.info("发送短信频繁，请稍后再试");
             throw new Exception("**********发送短信频繁，请稍后再试***********");
-        }
+        }*/
     }
 
     /**

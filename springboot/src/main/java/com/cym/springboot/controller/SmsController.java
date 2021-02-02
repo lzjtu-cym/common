@@ -3,9 +3,11 @@ package com.cym.springboot.controller;
 import com.cym.springboot.common.utils.ResponseUtil;
 import com.cym.springboot.service.ISmsService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +28,7 @@ public class SmsController {
     private ISmsService smsService;
 
     @PostMapping("/sendSms")
+    @ApiOperation(value = "短信发送", notes = "短信发送入口")
     public Object sendMail(String phones) {
         try {
             smsService.sendSms(phones);
@@ -37,6 +40,7 @@ public class SmsController {
     }
 
     @PostMapping("/validSmsCode")
+    @ApiOperation(value = "短信验证码校验", notes = "短信验证码校验")
     public Object validSmsCode(String phone, String code) {
         try {
             if (smsService.validSmsCode(phone, code)) {
