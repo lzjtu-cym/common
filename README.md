@@ -15,6 +15,7 @@
 5.  opsForList: list队列
 
 - 三、java邮件发送
+- 四、集成alibaba短信验证码发送
 
 #### 软件架构
 软件架构说明
